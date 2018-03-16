@@ -2,7 +2,7 @@
 // when the Apollo Devtools panel is activated.
 import { initBroadCastEvents } from "./broadcastQueries";
 import { initLinkEvents } from "./links";
-import { checkVersions } from "./checkVersions";
+// import { checkVersions } from "./checkVersions";
 
 // hook should have been injected before this executes.
 const hook = window.__APOLLO_DEVTOOLS_GLOBAL_HOOK__;
@@ -18,7 +18,7 @@ const connect = () => {
   }
   bridge.log("backend ready.");
   bridge.send("ready", hook.ApolloClient.version);
-  checkVersions(hook, bridge);
+  // checkVersions(hook, bridge);
 };
 
 export const initBackend = b => {

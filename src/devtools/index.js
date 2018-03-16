@@ -4,7 +4,8 @@ import { render } from "react-dom";
 
 import Panel from "./components/Panel";
 import { BridgeProvider } from "./components/bridge";
-import { loadAnalytics } from "./analytics";
+// import { loadAnalytics } from "./analytics";
+window.ga = () => {};
 
 const isChrome = typeof chrome !== "undefined" && !!chrome.devtools;
 const isDark = isChrome ? chrome.devtools.panels.themeName === "dark" : false;
@@ -30,7 +31,7 @@ export const initApp = shell => {
 
 export const initDevTools = shell => {
   initApp(shell);
-  loadAnalytics();
+  // loadAnalytics();
   shell.onReload(() => {
     bridge && bridge.removeAllListeners();
     initApp(shell);
