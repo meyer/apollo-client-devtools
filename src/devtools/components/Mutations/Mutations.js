@@ -12,7 +12,9 @@ import Warning from "../Images/Warning";
 import "../WatchedQueries/WatchedQueries.less";
 
 const mutationLabel = (mutationId, mutation) => {
-  const mutationName = getOperationName(parse(mutation.mutationString));
+  const mutationName = getOperationName(
+    parse(mutation.mutationString || mutation.document.loc.source.body),
+  );
   if (mutationName === null) {
     return mutationId;
   }
@@ -180,25 +182,35 @@ class WatchedMutation extends React.Component {
       mutation.metadata &&
       mutation.metadata.reactComponent &&
       mutation.metadata.reactComponent.displayName;
+    const componentDisplayName =
+      mutation &&
+      mutation.metadata &&
+      mutation.metadata.component &&
+      mutation.metadata.component.displayName;
+    const displayName = componentDisplayName || reactComponentDisplayName;
+
+    const mutationString =
+      mutation.mutationString || mutation.document.loc.source.body;
+
     return (
       <div className={classnames("main", { loading: mutation.loading })}>
         <div className="panel-title">
           {mutationLabel(mutationId, mutation)}
-          {reactComponentDisplayName && (
-            <span className="component-name">{`<${reactComponentDisplayName}>`}</span>
+          {displayName && (
+            <span className="component-name">{`<${displayName}>`}</span>
           )}
           <span
-            className="show-in-graphiql-link"
+            className="run-in-graphiql-link"
             onClick={() =>
               this.props.onRun(
-                mutation.mutationString,
+                mutationString,
                 mutation.variables,
                 "Mutations",
                 false,
               )
             }
           >
-            Show in GraphiQL
+            Run in GraphiQL
           </span>
           <span
             className={classnames("loading-label", { show: mutation.loading })}
@@ -214,7 +226,7 @@ class WatchedMutation extends React.Component {
         <LabeledShowHide label="Mutation string" show={false}>
           <GraphqlCodeBlock
             className="GraphqlCodeBlock"
-            queryBody={mutation.mutationString}
+            queryBody={mutationString}
           />
         </LabeledShowHide>
         {mutation.graphQLErrors &&
